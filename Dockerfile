@@ -11,18 +11,25 @@ COPY /xcat/minixcatd.awk /bin/minixcatd.awk
 COPY /xcat/udpcat.awk /bin/udpcat.awk
 COPY /xcat/dodiscovery /bin/dodiscovery
 COPY /xcat/doxcat /bin/doxcat
+COPY /xcat/getcert /bin/getcert
+COPY /xcat/getdestiny /bin/getdestiny
+COPY /xcat/allowcred.awk /bin/allowcred.awk
 
 RUN yum makecache fast; \
-    yum install -y openssh-server gawk scp rsyslog rpcbind initscripts; \
+    yum install -y lldpad openssh-server gawk scp rsyslog rpcbind initscripts openssl openssh-clients; \
     echo root:cluster|chpasswd; \
     sshd-keygen -t rsa; \
     chmod +x /bin/startservice.sh; \
     chmod +x /bin/minixcatd.awk; \
     chmod +x /bin/udpcat.awk; \
     chmod +x /bin/dodiscovery; \
+    chmod +x /bin/getcert; \
+    chmod +x /bin/getdestiny; \
+    chmod +x /bin/allowcred.awk; \
     chmod +x /bin/doxcat 
 
 
             
 
 ENTRYPOINT ["/bin/startservice.sh"]
+#ENTRYPOINT ["/bin/bash"]

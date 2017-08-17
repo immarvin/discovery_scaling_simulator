@@ -162,7 +162,7 @@ for parm in `cat /proc/cmdline`; do
     elif [[ ${key,,} == "gateway" ]]; then
         gateway=$value
     elif [[ ${key,,} == "xcatd" ]]; then
-        XCATMASTER=`echo $value |awk -F: '{print $1}'`
+        [ -z "$XCATMASTER" ] &&  XCATMASTER=`echo $value |awk -F: '{print $1}'`
         XCATPORT=`echo $value |awk -F: '{print $2}'`
     fi
 done
