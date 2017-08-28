@@ -14,6 +14,7 @@ COPY /xcat/doxcat /bin/doxcat
 COPY /xcat/getcert /bin/getcert
 COPY /xcat/getdestiny /bin/getdestiny
 COPY /xcat/allowcred.awk /bin/allowcred.awk
+COPY /xcat/restart /bin/restart
 
 RUN yum makecache fast; \
     yum install -y lldpad openssh-server gawk scp rsyslog rpcbind initscripts openssl openssh-clients; \

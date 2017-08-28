@@ -9,24 +9,25 @@ reqtime=0
 maxresptime=180
 
 minixcatd.awk &
+pid_minixcatd=$!
 PUBKEY=`openssl rsa -in /etc/xcat/privkey.pem -pubout 2> /dev/null|grep -v "PUBLIC KEY"`
 PUBKEY=`echo $PUBKEY|sed -e 's/ //g'`
 export PUBKEY
 
 logger -s -t $log_label -p local4.info "Beginning node discovery process..."
-for nic in `ip link|grep mtu|grep -v LOOPBACK|grep -v usb|grep -v ,LOWER_UP|awk -F: '{print $2}'`; do
+for nic in `ip link|grep mtu|grep -v LOOPBACK|grep -v usb|grep -v ,LOWER_UP|awk -F: '{print $2}'|sed -e 's/@[a-zA-Z0-9]\+//'`; do
     ip link set $nic up
 done
 waitforlink=100
 while [ ! -z "$NICSTOBRINGUP" -a $waitforlink -gt 0 ]; do
-	NICSTOBRINGUP=`ip link|grep mtu|grep -v LOOPBACK|grep -v usb|grep -v ,LOWER_UP|awk -F: '{print $2}'`
+	NICSTOBRINGUP=`ip link|grep mtu|grep -v LOOPBACK|grep -v usb|grep -v ,LOWER_UP|awk -F: '{print $2}'|sed -e 's/@[a-zA-Z0-9]\+//'`
 	waitforlink=$((waitforlink - 1))
 	sleep 0.1
 	if [ $waitforlink = 1 ]; then
 		logger -s -t $log_label -p local4.warning "No link detected on $NICSTOBRINGUP after 10 seconds"
 	fi
 done
-NICSGETTINGADDR=`ip link|grep mtu|grep -v LOOPBACK|grep -v usb|grep ,LOWER_UP|awk -F: '{print $2}'`
+NICSGETTINGADDR=`ip link|grep mtu|grep -v LOOPBACK|grep -v usb|grep ,LOWER_UP|awk -F: '{print $2}'|sed -e 's/@[a-zA-Z0-9]\+//'`
 timewaiting=0
 logger -s -t $log_label -p local4.info "Waiting for nics to get addresses"
 while [ ! -z "$NICSGETTINGADDR" -a $timewaiting != 700 ]; do
@@ -201,7 +202,7 @@ if [ -f "/usr/sbin/dmidecode" ]; then
 fi
 MAC_OF_FIRST_UP_NIC=unknown
 #TODO: downed nics, also examine /sys/bus/pci/*/ for more network class devices that might not have driver suppert
-for dev in `ip link|grep -B1 ether|grep UP|awk '{print $2}'|sed -e s/://|grep -v usb0`; do
+for dev in `ip link|grep -B1 ether|grep UP|awk '{print $2}'|sed -e s/://|grep -v usb0|sed -e 's/@[a-zA-Z0-9]\+//'`; do
 	FIRMDESC=""
 	ONBOARDINDEX=""
 	DRIVER=`grep DRIVER /sys/class/net/$dev/device/uevent|awk -F= '{print $2}'`
@@ -306,5 +307,6 @@ gzip -9 /tmp/discopacket
 	logger -s -t $log_label -p local4.info "Sleeping 5 seconds..."
 	sleep 5
 done
+kill 2 $pid_minixcatd
 logger -s -t $log_label -p local4.info "Restart network interfaces..."
 /bin/restart

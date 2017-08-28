@@ -196,7 +196,7 @@ else
         if [ -z "$bootnic" ]; then
             tries=0
             while [ $tries -lt 100 ]; do
-                ALLUP_NICS=`ip link show | grep -v "^ " | grep "state UP" | awk '{print $2}' | sed -e 's/:$//'|grep -v lo | sort -n -r`
+                ALLUP_NICS=`ip link show | grep -v "^ " | grep "state UP" | awk '{print $2}' | sed -e 's/@[a-zA-Z0-9]\+://' -e 's/:$//'|grep -v lo | sort -n -r`
                 for tmp1 in $ALLUP_NICS; do
                     dhclient -cf /etc/dhclient.conf -pf /var/run/dhclient.$tmp1.pid $tmp1 &
                     dhclient -6 -pf /var/run/dhclient6.$tmp1.pid $tmp1 -lf /var/lib/dhclient/dhclient6.leases &
