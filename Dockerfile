@@ -17,7 +17,7 @@ COPY /xcat/allowcred.awk /bin/allowcred.awk
 COPY /xcat/restart /bin/restart
 
 RUN yum makecache fast; \
-    yum install -y lldpad openssh-server gawk scp rsyslog rpcbind initscripts openssl openssh-clients; \
+    yum install -y lldpad openssh-server gawk scp rsyslog rpcbind initscripts openssl openssh-clients ntp; \
     echo root:cluster|chpasswd; \
     sshd-keygen -t rsa; \
     chmod +x /bin/startservice.sh; \
