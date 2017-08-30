@@ -15,6 +15,7 @@ COPY /xcat/getcert /bin/getcert
 COPY /xcat/getdestiny /bin/getdestiny
 COPY /xcat/allowcred.awk /bin/allowcred.awk
 COPY /xcat/restart /bin/restart
+COPY /xcat/ntp-wait /bin/ntp-wait
 
 RUN yum makecache fast; \
     yum install -y lldpad openssh-server gawk scp rsyslog rpcbind initscripts openssl openssh-clients ntp; \
@@ -27,7 +28,8 @@ RUN yum makecache fast; \
     chmod +x /bin/getcert; \
     chmod +x /bin/getdestiny; \
     chmod +x /bin/allowcred.awk; \
-    chmod +x /bin/doxcat 
+    chmod +x /bin/doxcat; \
+    chmod +x /bin/ntp-wait 
 
 
             
