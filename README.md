@@ -25,5 +25,5 @@ The steps to utilize the discovery scaling simulator:
 ````
     for i in {1..500};do docker run  -e "XCATMASTER=10.3.5.21" --network mynet   --ip 10.4.$[224+i/200].$[i%200+1] --name "node$(printf %04d $i)" --hostname "node$(printf %04d $i)"  --mac-address="00:00:00:00:$(printf %02x $[i/256]):$(printf %02x $[i%256])" --entrypoint=/bin/dodiscovery  -itd  --rm xcat/discovery_scaling_simulator; done
 ````
-````    
+
    the environment variable "XCATMASTER" specifies the IP address of MN on which xcatd is running
