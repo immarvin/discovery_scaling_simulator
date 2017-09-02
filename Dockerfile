@@ -18,7 +18,7 @@ COPY /xcat/restart /bin/restart
 COPY /xcat/ntp-wait /bin/ntp-wait
 
 RUN yum makecache fast; \
-    yum install -y lldpad openssh-server gawk scp rsyslog rpcbind initscripts openssl openssh-clients ntp; \
+    yum install -y lldpad openssh-server gawk scp rsyslog rpcbind initscripts openssl openssh-clients ntp dhclient; \
     echo root:cluster|chpasswd; \
     sshd-keygen -t rsa; \
     chmod +x /bin/startservice.sh; \
